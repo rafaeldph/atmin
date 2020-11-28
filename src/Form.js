@@ -88,7 +88,7 @@ export default class Form extends React.Component {
         </div>
         <div className="form-element">
           <label htmlFor="limit">Límite de la cola</label>
-          <input type="text" className="form-input" maxLength="6" value={this.state.limit} onChange={event => this.handleLimitChange(event.target.value)} />
+          <input type="text" className="form-input" maxLength="6" value={this.state.limit} placeholder="Sin límite" onChange={event => this.handleLimitChange(event.target.value)} />
         </div>
         <div className="form-element">
           <button className="form-submit-button" onClick={this.handleSubmit.bind(this)}>Continuar</button>

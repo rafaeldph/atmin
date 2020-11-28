@@ -6,19 +6,17 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { started: false, data: {} };
+    this.state = { Component: Form, data: {} };
   }
 
-  handleStarting(values) {
-    console.log(values);
+  handleChange(values) {
+    this.setState({ data: values });
   }
 
   render() {
-    let Component = (this.state.started) ? Form : Form;
-
     return (
       <div className="main-container">
-        <Component onSubmit={values => this.handleStarting(values)} />
+        <this.state.Component onSubmit={values => this.handleChange(values)} />
       </div>
     );
   }
