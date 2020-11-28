@@ -6,7 +6,7 @@ export default class Form extends React.Component {
 
     this.time_format = "**:**:**";
     this.time_mask = "--:--:--";
-    this.time_regexp = /\d{2}:\d{2}:\d{2}/;
+    this.time_regexp = /([0-1]\d|2[0-4]):[0-5]\d:[0-5]\d/;
 
     this.state = { lambda: this.time_mask, mu: this.time_mask, limit: "", errors: {} };
   }
@@ -35,21 +35,25 @@ export default class Form extends React.Component {
   }
 
   handleLimitChange(value) {
-    this.setState({ limit: value.replace(/[^0-9]/g, "") })
+    if (value.replace(/[^0-9]/g, "") == "" || parseInt(value.replace(/[^0-9]/g, "")) > 0) {
+      this.setState({ limit: value.replace(/[^0-9]/g, "") });
+    }
   }
 
   handleSubmit() {
-    const error = "No está en el formato adecuado.";
+    const format_error = "No está en el formato adecuado.";
 
     let errors = ["lambda", "mu"].reduce((errors, index) => {
       if (!this.time_regexp.test(this.state[index])) {
-        errors[index] = error;
+        errors[index] = format_error;
+      } else if (this.state[index].split(':').reverse().reduce((result, current, index) => result + current * Math.pow(60,index), 0) == 0) {
+        errors[index] = "El tiempo promedio no puede ser 0.";
       }
       return errors;
     }, {});
 
     if (!/^\d*$/g.test(this.state.limit)) {
-      errors['limit'] = error;
+      errors['limit'] = format_error;
     }
 
     this.setState({ errors: errors });
@@ -84,7 +88,7 @@ export default class Form extends React.Component {
         </div>
         <div className="form-element">
           <label htmlFor="limit">Límite de la cola</label>
-          <input type="text" className="form-input" value={this.state.limit} onChange={event => this.handleLimitChange(event.target.value)} />
+          <input type="text" className="form-input" maxLength="6" value={this.state.limit} onChange={event => this.handleLimitChange(event.target.value)} />
         </div>
         <div className="form-element">
           <button className="form-submit-button" onClick={this.handleSubmit.bind(this)}>Continuar</button>
