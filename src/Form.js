@@ -35,7 +35,7 @@ export default class Form extends React.Component {
   }
 
   handleLimitChange(value) {
-    if (value.replace(/[^0-9]/g, "") == "" || parseInt(value.replace(/[^0-9]/g, "")) > 0) {
+    if (value.replace(/[^0-9]/g, "") === "" || parseInt(value.replace(/[^0-9]/g, "")) > 0) {
       this.setState({ limit: value.replace(/[^0-9]/g, "") });
     }
   }
@@ -46,7 +46,7 @@ export default class Form extends React.Component {
     let errors = ["lambda", "mu"].reduce((errors, index) => {
       if (!this.time_regexp.test(this.state[index])) {
         errors[index] = format_error;
-      } else if (this.state[index].split(':').reverse().reduce((result, current, index) => result + current * Math.pow(60,index), 0) == 0) {
+      } else if (this.state[index].split(':').reverse().reduce((result, current, index) => result + current * Math.pow(60,index), 0) === 0) {
         errors[index] = "El tiempo promedio no puede ser 0.";
       }
       return errors;
