@@ -1,5 +1,9 @@
 import React from 'react';
 
+function calcSeconds(time) {
+  return time.split(':').reverse().reduce((result, current, index) => result + current * Math.pow(60,index), 0);
+}
+
 export default class Form extends React.Component {
   constructor(props) {
     super(props);
@@ -28,10 +32,10 @@ export default class Form extends React.Component {
   }
 
   handleDateChange(name, target) {
-    const val = this.format(target.value, this.time_format);
-    this.setState({ [name]: this.format(target.value, this.time_format, this.time_mask) }, () => {
-      target.selectionStart = target.selectionEnd = val.length
-    });
+    this.setState(
+      { [name]: this.format(target.value, this.time_format, this.time_mask) }, 
+      () => target.selectionStart = target.selectionEnd = this.format(target.value, this.time_format).length
+    );
   }
 
   handleIntegerChange(name, value) {
@@ -46,7 +50,7 @@ export default class Form extends React.Component {
     let errors = ["lambda", "mu", "observe"].reduce((errors, index) => {
       if (!this.time_regexp.test(this.state[index])) {
         errors[index] = format_error;
-      } else if (this.state[index].split(':').reverse().reduce((result, current, index) => result + current * Math.pow(60,index), 0) === 0) {
+      } else if (calcSeconds(this.state[index]) === 0) {
         errors[index] = "El tiempo no puede ser 0.";
       }
       return errors;
@@ -66,7 +70,7 @@ export default class Form extends React.Component {
       let values = ["lambda", "mu", "observe"].reduce(
         (values, index) => 
         Object.assign(values, { 
-          [index]: this.state[index].split(':').reverse().reduce((result, current, index) => result + current * Math.pow(60,index), 0)
+          [index]: calcSeconds(this.state[index])
         }), 
         { servers: parseInt(this.state.servers) }
       );
