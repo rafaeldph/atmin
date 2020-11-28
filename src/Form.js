@@ -8,7 +8,7 @@ export default class Form extends React.Component {
     this.time_mask = "--:--:--";
     this.time_regexp = /([0-1]\d|2[0-4]):[0-5]\d:[0-5]\d/;
 
-    this.state = { lambda: this.time_mask, mu: this.time_mask, observe: this.time_mask, limit: "", errors: {} };
+    this.state = { lambda: this.time_mask, mu: this.time_mask, observe: this.time_mask, limit: "", servers: "", errors: {} };
   }
 
   format(x, pattern, mask = "") {
@@ -34,9 +34,9 @@ export default class Form extends React.Component {
     });
   }
 
-  handleLimitChange(value) {
+  handleIntegerChange(name, value) {
     if (value.replace(/[^0-9]/g, "") === "" || parseInt(value.replace(/[^0-9]/g, "")) > 0) {
-      this.setState({ limit: value.replace(/[^0-9]/g, "") });
+      this.setState({ [name]: value.replace(/[^0-9]/g, "") });
     }
   }
 
@@ -56,6 +56,10 @@ export default class Form extends React.Component {
       errors['limit'] = format_error;
     }
 
+    if (!/^\d+$/g.test(this.state.servers)) {
+      errors['servers'] = "Es un campo requerido";
+    }
+
     this.setState({ errors: errors });
 
     if (!Object.keys(errors).length) {
@@ -64,7 +68,7 @@ export default class Form extends React.Component {
         Object.assign(values, { 
           [index]: this.state[index].split(':').reverse().reduce((result, current, index) => result + current * Math.pow(60,index), 0)
         }), 
-        {}
+        { servers: parseInt(this.state.servers) }
       );
       if (parseInt(this.state.limit) && parseInt(this.state.limit) > 0) {
         values['limit'] = parseInt(this.state.limit);
@@ -89,8 +93,13 @@ export default class Form extends React.Component {
             {this.state.errors.mu && <p className="form-error">{this.state.errors.mu}</p>}
           </div>
           <div className="form-element">
+            <label htmlFor="servers">Cantidad de servidores</label>
+            <input type="text" className="form-input" maxLength="2" value={this.state.servers} onChange={event => this.handleIntegerChange("servers", event.target.value)} />
+            {this.state.errors.servers && <p className="form-error">{this.state.errors.servers}</p>}
+          </div>
+          <div className="form-element">
             <label htmlFor="limit">Límite de la cola</label>
-            <input type="text" className="form-input" maxLength="6" value={this.state.limit} placeholder="Sin límite" onChange={event => this.handleLimitChange(event.target.value)} />
+            <input type="text" className="form-input" maxLength="6" value={this.state.limit} placeholder="Sin límite" onChange={event => this.handleIntegerChange("limit", event.target.value)} />
           </div>
           <div className="form-element">
             <label htmlFor="observe">Observar durante <br /><small>(HH:mm:ss)</small></label>
