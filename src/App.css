@@ -3,32 +3,43 @@
   color: white;
   width: 100vw;
   height: 100vh;
+  overflow-y: auto;
 }
 
 .initial-form {
   width: 100%;
   max-width: 1024px;
   height: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-inputs-container {
   display: flex;
   flex-direction: row;
   align-items: center;
   align-content: center;
   justify-content: space-evenly;
   flex-wrap: wrap;
-  margin: 0 auto;
 }
 
 .form-element {
-  width: 300px;
+  width: 250px;
   max-width: 100%;
   display: flex;
   flex-direction: column;
-  margin: 20px 5px;
+  margin: 20px 15px;
   font-size: 18px;
 }
 
 .form-element > label {
   margin-bottom: 5px;
+}
+.form-element > label > small {
+  color: #888;
 }
 
 .form-input {
@@ -44,7 +55,8 @@
 }
 
 .form-submit-button {
-  padding: 10px;
+  padding: 10px 30px;
+  margin-top: 20px;
   background-color: black;
   color: white;
   border: none;

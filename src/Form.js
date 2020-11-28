@@ -8,7 +8,7 @@ export default class Form extends React.Component {
     this.time_mask = "--:--:--";
     this.time_regexp = /([0-1]\d|2[0-4]):[0-5]\d:[0-5]\d/;
 
-    this.state = { lambda: this.time_mask, mu: this.time_mask, limit: "", errors: {} };
+    this.state = { lambda: this.time_mask, mu: this.time_mask, observe: this.time_mask, limit: "", errors: {} };
   }
 
   format(x, pattern, mask = "") {
@@ -43,11 +43,11 @@ export default class Form extends React.Component {
   handleSubmit() {
     const format_error = "No está en el formato adecuado.";
 
-    let errors = ["lambda", "mu"].reduce((errors, index) => {
+    let errors = ["lambda", "mu", "observe"].reduce((errors, index) => {
       if (!this.time_regexp.test(this.state[index])) {
         errors[index] = format_error;
       } else if (this.state[index].split(':').reverse().reduce((result, current, index) => result + current * Math.pow(60,index), 0) === 0) {
-        errors[index] = "El tiempo promedio no puede ser 0.";
+        errors[index] = "El tiempo no puede ser 0.";
       }
       return errors;
     }, {});
@@ -59,7 +59,7 @@ export default class Form extends React.Component {
     this.setState({ errors: errors });
 
     if (!Object.keys(errors).length) {
-      let values = ["lambda", "mu"].reduce(
+      let values = ["lambda", "mu", "observe"].reduce(
         (values, index) => 
         Object.assign(values, { 
           [index]: this.state[index].split(':').reverse().reduce((result, current, index) => result + current * Math.pow(60,index), 0)
@@ -76,23 +76,29 @@ export default class Form extends React.Component {
   render() {
     return (
       <div className="initial-form">
-        <div className="form-element">
-          <label htmlFor="lambda">Tiempo medio de llegada (HH:mm:ss)</label>
-          <input type="text" className="form-input" value={this.state.lambda} onChange={event => this.handleDateChange("lambda", event.target)} />
-          {this.state.errors.lambda && <p className="form-error">{this.state.errors.lambda}</p>}
+        <h1>Atmin</h1>
+        <div className="form-inputs-container">
+          <div className="form-element">
+            <label htmlFor="lambda">Tiempo medio de llegada <br /><small>(HH:mm:ss)</small></label>
+            <input type="text" className="form-input" value={this.state.lambda} onChange={event => this.handleDateChange("lambda", event.target)} />
+            {this.state.errors.lambda && <p className="form-error">{this.state.errors.lambda}</p>}
+          </div>
+          <div className="form-element">
+            <label htmlFor="mu">Tiempo medio de servicio <br /><small>(HH:mm:ss)</small></label>
+            <input type="text" className="form-input" value={this.state.mu} onChange={event => this.handleDateChange("mu", event.target)} />
+            {this.state.errors.mu && <p className="form-error">{this.state.errors.mu}</p>}
+          </div>
+          <div className="form-element">
+            <label htmlFor="limit">Límite de la cola</label>
+            <input type="text" className="form-input" maxLength="6" value={this.state.limit} placeholder="Sin límite" onChange={event => this.handleLimitChange(event.target.value)} />
+          </div>
+          <div className="form-element">
+            <label htmlFor="observe">Observar durante <br /><small>(HH:mm:ss)</small></label>
+            <input type="text" className="form-input" value={this.state.observe} onChange={event => this.handleDateChange("observe", event.target)} />
+            {this.state.errors.observe && <p className="form-error">{this.state.errors.observe}</p>}
+          </div>
         </div>
-        <div className="form-element">
-          <label htmlFor="mu">Tiempo medio de servicio (HH:mm:ss)</label>
-          <input type="text" className="form-input" value={this.state.mu} onChange={event => this.handleDateChange("mu", event.target)} />
-          {this.state.errors.mu && <p className="form-error">{this.state.errors.mu}</p>}
-        </div>
-        <div className="form-element">
-          <label htmlFor="limit">Límite de la cola</label>
-          <input type="text" className="form-input" maxLength="6" value={this.state.limit} placeholder="Sin límite" onChange={event => this.handleLimitChange(event.target.value)} />
-        </div>
-        <div className="form-element">
-          <button className="form-submit-button" onClick={this.handleSubmit.bind(this)}>Continuar</button>
-        </div>
+        <button className="form-submit-button" onClick={this.handleSubmit.bind(this)}>Continuar</button>
       </div>
     );
   }
