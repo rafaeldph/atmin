@@ -62,7 +62,7 @@ export default class Form extends React.Component {
         }), 
         {}
       );
-      if (this.state.limit) {
+      if (parseInt(this.state.limit) && parseInt(this.state.limit) > 0) {
         values['limit'] = parseInt(this.state.limit);
       }
       this.props.onSubmit(values);
