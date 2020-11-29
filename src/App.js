@@ -1,21 +1,23 @@
 import React from 'react';
 import Form from './Form';
+import Game from './Game';
 import './App.css';
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { Component: <Form onSubmit={values => this.handleChange(values)} /> };
+    this.state = { component: <Form onSubmit={values => this.initGame(values)} /> };
   }
 
-  handleChange(values) {
+  initGame(values) {
+    this.setState({ component: <Game {...values} /> });
   }
 
   render() {
     return (
       <div className="main-container">
-        {this.state.Component}
+        {this.state.component}
       </div>
     );
   }

@@ -4,6 +4,22 @@ function calcSeconds(time) {
   return time.split(':').reverse().reduce((result, current, index) => result + current * Math.pow(60,index), 0);
 }
 
+function format(x, pattern, mask = "") {
+  let chars = x.replace(/[^0-9]/g, "").split('');
+  let count = 0;
+
+  let formatted = '';
+  for (let i=0; i<pattern.length; i++) {
+    if (chars[count]) {
+      formatted += (/\*/.test(pattern[i])) ? chars[count++] : pattern[i];
+    } else if (mask && mask[i]) {
+      formatted += mask[i];
+    }
+  }
+
+  return formatted;
+}
+
 export default class Form extends React.Component {
   constructor(props) {
     super(props);
@@ -15,26 +31,10 @@ export default class Form extends React.Component {
     this.state = { lambda: this.time_mask, mu: this.time_mask, observe: this.time_mask, limit: "", servers: "", errors: {} };
   }
 
-  format(x, pattern, mask = "") {
-    let chars = x.replace(/[^0-9]/g, "").split('');
-    let count = 0;
-  
-    let formatted = '';
-    for (let i=0; i<pattern.length; i++) {
-      if (chars[count]) {
-        formatted += (/\*/.test(pattern[i])) ? chars[count++] : pattern[i];
-      } else if (mask && mask[i]) {
-        formatted += mask[i];
-      }
-    }
-
-    return formatted;
-  }
-
   handleDateChange(name, target) {
     this.setState(
-      { [name]: this.format(target.value, this.time_format, this.time_mask) }, 
-      () => target.selectionStart = target.selectionEnd = this.format(target.value, this.time_format).length
+      { [name]: format(target.value, this.time_format, this.time_mask) }, 
+      () => target.selectionStart = target.selectionEnd = format(target.value, this.time_format).length
     );
   }
 
@@ -111,7 +111,7 @@ export default class Form extends React.Component {
             {this.state.errors.observe && <p className="form-error">{this.state.errors.observe}</p>}
           </div>
         </div>
-        <button className="form-submit-button" onClick={this.handleSubmit.bind(this)}>Continuar</button>
+        <button className="form-submit-button" onClick={() => this.handleSubmit()}>Continuar</button>
       </div>
     );
   }
