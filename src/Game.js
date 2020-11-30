@@ -65,6 +65,9 @@ export default class Game extends React.Component {
             <button className="modify-delta-button" disabled={this.state.delta <= 1/32} onClick={() => this.multiplyDelta(1/2)}>&gt;&gt;</button>
           </div>
         </div>
+        <div className="servers">
+          {this.state.servers}
+        </div>
       </div>
     );
   }
