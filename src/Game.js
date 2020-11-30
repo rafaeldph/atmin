@@ -28,8 +28,6 @@ export default class Game extends React.Component {
       delta: 1,
       servers: [...Array(this.props.servers).keys()].map(key => <Server key={key} />) 
     };
-
-    this.timer = {};
   }
 
   componentDidMount() {
@@ -59,11 +57,14 @@ export default class Game extends React.Component {
   render() {
     return (
       <div className="game">
-        {this.state.servers}
-        {secondsToTime(this.state.seconds)}
-        <button disabled={this.state.delta >= 1} onClick={() => this.multiplyDelta(2)}>Slow</button>
-        <button disabled={this.state.delta <= 1/32} onClick={() => this.multiplyDelta(1/2)}>Fast</button>
-        <p>x{1/this.state.delta}</p>
+        <div className="time-stats">
+          <div className="time-counter">{secondsToTime(this.state.seconds)}</div>
+          <div className="time-delta">
+            <button className="modify-delta-button" disabled={this.state.delta >= 1} onClick={() => this.multiplyDelta(2)}>&lt;&lt;</button>
+            <div>x{1/this.state.delta}</div>
+            <button className="modify-delta-button" disabled={this.state.delta <= 1/32} onClick={() => this.multiplyDelta(1/2)}>&gt;&gt;</button>
+          </div>
+        </div>
       </div>
     );
   }

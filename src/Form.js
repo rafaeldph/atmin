@@ -1,7 +1,7 @@
 import React from 'react';
 
 function calcSeconds(time) {
-  return time.split(':').reverse().reduce((result, current, index) => result + current * Math.pow(60,index), 0);
+  return time.split(':').reverse().reduce((result, current, index) => result + current * Math.pow(60, index), 0);
 }
 
 function format(x, pattern, mask = "") {
@@ -26,9 +26,16 @@ export default class Form extends React.Component {
 
     this.time_format = "**:**:**";
     this.time_mask = "--:--:--";
-    this.time_regexp = /([0-1]\d|2[0-4]):[0-5]\d:[0-5]\d/;
+    this.time_regexp = /[0-5]\d:[0-5]\d:[0-5]\d/;
 
-    this.state = { lambda: this.time_mask, mu: this.time_mask, observe: this.time_mask, limit: "", servers: "", errors: {} };
+    this.state = { 
+      lambda: this.time_mask, 
+      mu: this.time_mask, 
+      observe: this.time_mask, 
+      limit: "", 
+      servers: "", 
+      errors: {}
+    };
   }
 
   handleDateChange(name, target) {
@@ -50,8 +57,8 @@ export default class Form extends React.Component {
     let errors = ["lambda", "mu", "observe"].reduce((errors, index) => {
       if (!this.time_regexp.test(this.state[index])) {
         errors[index] = format_error;
-      } else if (calcSeconds(this.state[index]) === 0) {
-        errors[index] = "El tiempo no puede ser 0.";
+      } else if (calcSeconds(this.state[index]) <= 0 || calcSeconds(this.state[index]) >= 24*60*60) {
+        errors[index] = "El tiempo debe estar en el rango 00:00:01 - 23:59:59.";
       }
       return errors;
     }, {});
