@@ -54,7 +54,7 @@ class Game extends React.Component {
     let { clients, lastClient } = this.state;
     
     clients.push({
-      clientColor: `rgb(${parseInt(Math.random() * 255)}, ${parseInt(Math.random() * 255)}, ${parseInt(Math.random() * 255)}})`,
+      clientColor: `rgb(${parseInt(Math.random() * 255)}, ${parseInt(Math.random() * 255)}, ${parseInt(Math.random() * 255)})`,
       clientTime: getRandomPoisson(this.props.mu)
     });
 
