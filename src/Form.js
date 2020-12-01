@@ -20,7 +20,7 @@ function format(x, pattern, mask = "") {
   return formatted;
 }
 
-export default class Form extends React.Component {
+class Form extends React.Component {
   constructor(props) {
     super(props);
 
@@ -122,4 +122,6 @@ export default class Form extends React.Component {
       </div>
     );
   }
-};
+}
+
+export default Form;

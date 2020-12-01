@@ -16,17 +16,33 @@ function secondsToTime(seconds) {
 }
 
 function getRandomExponential(rate) {
-  return parseInt(-Math.log(Math.random()) / rate);
+  return parseInt(-Math.log(Math.random()) * rate);
 }
 
-export default class Game extends React.Component {
+function getRandomPoisson(lambda) {
+  let l = Math.exp(-lambda);
+  let p = 1.0;
+  let k = 0;
+
+  do {
+    k++;
+    p *= Math.random();
+  } while (p > l);
+
+  return parseInt(k - 1);
+}
+
+class Game extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = { 
       seconds: this.props.observe, 
       delta: 1,
-      servers: [...Array(this.props.servers).keys()].map(key => <Server key={key} />) 
+      servers: Array(this.props.servers).fill({ clientColor: "", clientTime: -3 }),
+      clientSeconds: getRandomExponential(this.props.lambda),
+      lastClient: 0,
+      clients: []
     };
   }
 
@@ -34,20 +50,56 @@ export default class Game extends React.Component {
     this.setTimers();
   }
 
-  setTimers() {
-    clearInterval(this.timer);
-    this.timer = setInterval(() => this.countDown(), this.state.delta * 1000);
+  addNewClient() {
+    let { clients, lastClient } = this.state;
+    
+    clients.push({
+      clientColor: `rgb(${parseInt(Math.random() * 255)}, ${parseInt(Math.random() * 255)}, ${parseInt(Math.random() * 255)}})`,
+      clientTime: getRandomPoisson(this.props.mu)
+    });
+
+    this.setState({ clients: clients, lastClient: parseInt(lastClient + 1), clientSeconds: getRandomExponential(this.props.lambda) });
   }
 
-  countDown() {
-    let seconds = parseInt(this.state.seconds - 1);
+  setTimers() {
+    clearInterval(this.timer);
+    this.timer = setInterval(() => {
+      let { seconds, clientSeconds } = this.state;
 
-    if (seconds <= 0) { 
-      clearInterval(this.timer);
-      seconds = 0;
-    }
+      if (parseInt(seconds - 1) <= 0) { 
+        clearInterval(this.timer);
+        seconds = 1;
+      }
 
-    this.setState({ seconds: seconds });
+      this.setState({ seconds: parseInt(seconds - 1) });
+
+      if (parseInt(clientSeconds - 1) <= 0) {
+        this.addNewClient();
+      } else {
+        this.setState({ clientSeconds: parseInt(clientSeconds - 1) });
+      }
+
+      this.checkServers();
+    }, this.state.delta * 1000);
+  }
+
+  checkServers() {
+    let { servers, clients } = this.state;
+
+    servers = servers.map(server => {
+      server.clientTime -= 1;
+      
+      if (server.clientTime < 0) {
+        server.clientColor = "";
+      }
+      if (server.clientTime < -3 && clients.length) {
+        server = clients.shift();
+      }
+
+      return server;
+    });
+
+    this.setState({ servers: servers, clients: clients });
   }
 
   multiplyDelta(factor) {
@@ -66,9 +118,11 @@ export default class Game extends React.Component {
           </div>
         </div>
         <div className="servers">
-          {this.state.servers}
+          {this.state.servers.map((server, index) => <Server key={index} clientColor={server.clientColor} />)}
         </div>
       </div>
     );
   }
-};
+}
+
+export default Game;

@@ -3,7 +3,7 @@ import Form from './Form';
 import Game from './Game';
 import './App.css';
 
-export default class App extends React.Component {
+class App extends React.Component {
   constructor(props) {
     super(props);
 
@@ -21,4 +21,6 @@ export default class App extends React.Component {
       </div>
     );
   }
-};
+}
+
+export default App;
