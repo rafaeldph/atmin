@@ -5,6 +5,7 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow: auto;
 }
 
 .initial-form {
@@ -79,7 +80,10 @@
 .game {
   width: 100%;
   height: 100%;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
 }
 
 .time-stats {
@@ -120,7 +124,7 @@
 }
 
 .servers {
-  display: flex;
+  display: inline-flex;
   flex-direction: row;
   align-items: flex-start;
   flex-wrap: nowrap;
@@ -141,7 +145,7 @@
 
 .client {
   height: 45px;
-  margin-top: 5px;
+  margin: 10px;
 }
 .client > svg {
   height: 100%;
@@ -149,4 +153,12 @@
 
 .server-area + .server-area {
   margin-left: 15px;
+}
+
+.clients {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  margin: 15px;
 }

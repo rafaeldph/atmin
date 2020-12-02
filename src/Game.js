@@ -45,6 +45,10 @@ class Game extends React.Component {
       lastClient: 0,
       clients: []
     };
+
+    this.skins = ["#c58c85","#ecbcb4","#d1a3a4","#a1665e","#503335","#592f2a"];
+    this.hairs = ["#76412a","#97502d","#d08736","#b87b36","#714628","#e6be8a","#5e321f","#ffcc47","#996515","#7c0a02","#5d1916","#121212","#310306","#59260b","#aa8866","#debe99","#241c11","#4f1a00","#9a3300"];
+    this.pants = ["#7caac6","#84beeb","#425d8c","#313345","#1a224a"];
   }
 
   componentDidMount() {
@@ -56,7 +60,14 @@ class Game extends React.Component {
     
     if (!this.props.limit || clients.length < this.props.limit) {
       clients.push({
-        client: <Client />,
+        client: <Client
+          gender={Math.round(Math.random())}
+          skin={this.skins[parseInt(Math.random() * this.skins.length)]}
+          hair={this.skins[parseInt(Math.random() * this.hairs.length)]}
+          pants={this.skins[parseInt(Math.random() * this.pants.length)]}
+          shoes="#aaa"
+          shirt={`rgb(${parseInt(Math.random() * 256)}, ${parseInt(Math.random() * 256)}, ${parseInt(Math.random() * 256)})`}
+        />,
         clientTime: getRandomPoisson(this.props.mu)
       });
     }
@@ -122,6 +133,9 @@ class Game extends React.Component {
         </div>
         <div className="servers">
           {this.state.servers.map((server, index) => <Server key={index} client={server.client} />)}
+        </div>
+        <div className="clients">
+          {this.state.clients.map((c, i) => <div className="client" key={i}>{c.client}</div>)}
         </div>
       </div>
     );
