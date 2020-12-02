@@ -4,12 +4,17 @@ class Client extends React.Component {
   constructor(props) {
     super(props);
 
+    let skins = ["#c58c85","#ecbcb4","#d1a3a4","#a1665e","#503335","#592f2a"];
+    this.skin = skins[parseInt(Math.random() * skins.length)];
+
+    let hairs = ["#76412a","#97502d","#d08736","#b87b36","#714628","#e6be8a","#5e321f","#ffcc47","#996515","#7c0a02","#5d1916","#121212","#310306","#59260b","#aa8866","#debe99","#241c11","#4f1a00","#9a3300"];
+    this.hair = hairs[parseInt(Math.random() * hairs.length)];
+
     this.gender = Math.round(Math.random());
-    this.skin = "#ebc4a8";
-    this.hair = "#000";
-    this.shoes = `rgb(${parseInt(Math.random() * 255)}, ${parseInt(Math.random() * 255)}, ${parseInt(Math.random() * 255)})`;
-    this.pants = `rgb(${parseInt(Math.random() * 255)}, ${parseInt(Math.random() * 255)}, ${parseInt(Math.random() * 255)})`;
-    this.shirt = `rgb(${parseInt(Math.random() * 255)}, ${parseInt(Math.random() * 255)}, ${parseInt(Math.random() * 255)})`;
+    
+    this.shoes = `rgb(${parseInt(Math.random() * 256)}, ${parseInt(Math.random() * 256)}, ${parseInt(Math.random() * 256)})`;
+    this.pants = `rgb(${parseInt(Math.random() * 256)}, ${parseInt(Math.random() * 256)}, ${parseInt(Math.random() * 256)})`;
+    this.shirt = `rgb(${parseInt(Math.random() * 256)}, ${parseInt(Math.random() * 256)}, ${parseInt(Math.random() * 256)})`;
   }
 
   render() {

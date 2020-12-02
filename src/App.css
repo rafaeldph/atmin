@@ -83,7 +83,7 @@
 }
 
 .time-stats {
-  position: absolute;
+  position: fixed;
   top: 15px;
   right: 15px;
   display: flex;
