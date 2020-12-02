@@ -40,7 +40,7 @@ class Game extends React.Component {
     this.state = { 
       seconds: this.props.observe, 
       delta: 1,
-      servers: Array(this.props.servers).fill({ client: "", clientTime: -3 }),
+      servers: Array(this.props.servers).fill({ client: "", clientTime: -1 }),
       clientSeconds: getRandomExponential(this.props.lambda),
       lastClient: 0,
       clients: []
@@ -95,7 +95,7 @@ class Game extends React.Component {
       if (server.clientTime < 0) {
         server.client = "";
       }
-      if (server.clientTime < -3 && clients.length) {
+      if (server.clientTime < -1 && clients.length) {
         server = clients.shift();
       }
 
