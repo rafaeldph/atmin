@@ -1,5 +1,6 @@
 import React from 'react';
 import Server from './Server';
+import Client from './Client';
 
 function pad(num, size) {
   num = num.toString();
@@ -39,7 +40,7 @@ class Game extends React.Component {
     this.state = { 
       seconds: this.props.observe, 
       delta: 1,
-      servers: Array(this.props.servers).fill({ clientColor: "", clientTime: -3 }),
+      servers: Array(this.props.servers).fill({ client: "", clientTime: -3 }),
       clientSeconds: getRandomExponential(this.props.lambda),
       lastClient: 0,
       clients: []
@@ -53,10 +54,12 @@ class Game extends React.Component {
   addNewClient() {
     let { clients, lastClient } = this.state;
     
-    clients.push({
-      clientColor: `rgb(${parseInt(Math.random() * 255)}, ${parseInt(Math.random() * 255)}, ${parseInt(Math.random() * 255)})`,
-      clientTime: getRandomPoisson(this.props.mu)
-    });
+    if (!this.props.limit || clients.length < this.props.limit) {
+      clients.push({
+        client: <Client />,
+        clientTime: getRandomPoisson(this.props.mu)
+      });
+    }
 
     this.setState({ clients: clients, lastClient: parseInt(lastClient + 1), clientSeconds: getRandomExponential(this.props.lambda) });
   }
@@ -90,7 +93,7 @@ class Game extends React.Component {
       server.clientTime -= 1;
       
       if (server.clientTime < 0) {
-        server.clientColor = "";
+        server.client = "";
       }
       if (server.clientTime < -3 && clients.length) {
         server = clients.shift();
@@ -118,7 +121,7 @@ class Game extends React.Component {
           </div>
         </div>
         <div className="servers">
-          {this.state.servers.map((server, index) => <Server key={index} clientColor={server.clientColor} />)}
+          {this.state.servers.map((server, index) => <Server key={index} client={server.client} />)}
         </div>
       </div>
     );

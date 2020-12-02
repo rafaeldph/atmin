@@ -5,7 +5,7 @@ class Server extends React.Component {
     return (
       <div className="server-area">
         <div className="server"></div>
-        <div className="client" style={{backgroundColor: this.props.clientColor}}></div>
+        <div className="client">{this.props.client}</div>
       </div>
     );
   }
