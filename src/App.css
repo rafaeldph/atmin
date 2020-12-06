@@ -123,6 +123,17 @@
   cursor: pointer;
 }
 
+.stop-button {
+  background-color: red;
+  border: 1px solid #a00;
+  border-radius: 1px;
+  outline: none;
+  cursor: pointer;
+  color: white;
+  padding: 3px 15px;
+  font-weight: 700;
+}
+
 .servers {
   display: inline-flex;
   flex-direction: row;
@@ -146,9 +157,25 @@
 .client {
   height: 45px;
   margin: 10px;
+  position: relative;
 }
 .client > svg {
   height: 100%;
+}
+
+.rejected-client > svg {
+  opacity: 0.5;
+}
+
+.reject-x {
+  position: absolute;
+  color: red;
+  font-size: 60px;
+  font-weight: 700;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -60%);
+  z-index: 10;
 }
 
 .server-area + .server-area {

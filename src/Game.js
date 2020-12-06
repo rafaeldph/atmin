@@ -43,7 +43,8 @@ class Game extends React.Component {
       servers: Array(this.props.servers).fill({ client: "", clientTime: -1 }),
       clientSeconds: getRandomExponential(this.props.lambda),
       lastClient: 0,
-      clients: []
+      clients: [],
+      rejectedClients: []
     };
 
     this.skins = ["#c58c85","#ecbcb4","#d1a3a4","#a1665e","#503335","#592f2a"];
@@ -55,24 +56,35 @@ class Game extends React.Component {
     this.setTimers();
   }
 
+  stopSimulation() {
+    clearInterval(this.timer);
+  }
+
   addNewClient() {
-    let { clients, lastClient } = this.state;
-    
-    if (!this.props.limit || clients.length < this.props.limit) {
-      clients.push({
-        client: <Client
-          gender={Math.round(Math.random())}
-          skin={this.skins[parseInt(Math.random() * this.skins.length)]}
-          hair={this.skins[parseInt(Math.random() * this.hairs.length)]}
-          pants={this.skins[parseInt(Math.random() * this.pants.length)]}
-          shoes="#aaa"
-          shirt={`rgb(${parseInt(Math.random() * 256)}, ${parseInt(Math.random() * 256)}, ${parseInt(Math.random() * 256)})`}
-        />,
-        clientTime: getRandomPoisson(this.props.mu)
-      });
+    let client = <Client
+      gender={Math.round(Math.random())}
+      skin={this.skins[parseInt(Math.random() * this.skins.length)]}
+      hair={this.hairs[parseInt(Math.random() * this.hairs.length)]}
+      pants={this.pants[parseInt(Math.random() * this.pants.length)]}
+      shoes="#aaa"
+      shirt={`rgb(${parseInt(Math.random() * 256)}, ${parseInt(Math.random() * 256)}, ${parseInt(Math.random() * 256)})`}
+    />;
+
+    if (!this.props.limit || this.state.clients.length < this.props.limit) {
+      let { clients, lastClient } = this.state;
+
+      clients.push({ client: client, clientTime: getRandomPoisson(this.props.mu) });
+      return this.setState({ clients: clients, lastClient: parseInt(lastClient + 1), clientSeconds: getRandomExponential(this.props.lambda) });
     }
 
-    this.setState({ clients: clients, lastClient: parseInt(lastClient + 1), clientSeconds: getRandomExponential(this.props.lambda) });
+    let rejectedClients = this.state.rejectedClients;
+    rejectedClients.push(client);
+
+    this.setState({ rejectedClients: rejectedClients }, () => setTimeout(() => {
+      rejectedClients = this.state.rejectedClients;
+      rejectedClients.shift();
+      this.setState({ rejectedClients: rejectedClients });
+    }, this.state.delta * 1500));
   }
 
   setTimers() {
@@ -81,7 +93,7 @@ class Game extends React.Component {
       let { seconds, clientSeconds } = this.state;
 
       if (parseInt(seconds - 1) <= 0) { 
-        clearInterval(this.timer);
+        this.stopSimulation();
         seconds = 1;
       }
 
@@ -130,12 +142,21 @@ class Game extends React.Component {
             <div>x{1/this.state.delta}</div>
             <button className="modify-delta-button" disabled={this.state.delta <= 1/32} onClick={() => this.multiplyDelta(1/2)}>&gt;&gt;</button>
           </div>
+          <div className="time-stop">
+            <button className="stop-button" onClick={() => this.stopSimulation()}>Stop</button>
+          </div>
         </div>
         <div className="servers">
           {this.state.servers.map((server, index) => <Server key={index} client={server.client} />)}
         </div>
         <div className="clients">
           {this.state.clients.map((c, i) => <div className="client" key={i}>{c.client}</div>)}
+          {this.state.rejectedClients.map((c, i) => (
+            <div className="client rejected-client" key={i}>
+              <div className="reject-x">x</div>
+              {c}
+            </div>
+          ))}
         </div>
       </div>
     );
