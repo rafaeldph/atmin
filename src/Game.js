@@ -58,6 +58,13 @@ class Game extends React.Component {
 
   stopSimulation() {
     clearInterval(this.timer);
+
+    this.props.onFinish({
+      lambda: this.props.lambda / 3600,
+      mu: this.props.mu / 3600,
+      limit: this.props.limit,
+      servers: this.props.servers
+    });
   }
 
   addNewClient() {

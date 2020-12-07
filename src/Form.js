@@ -104,7 +104,7 @@ class Form extends React.Component {
             {this.state.errors.mu && <p className="form-error">{this.state.errors.mu}</p>}
           </div>
           <div className="form-element">
-            <label htmlFor="servers">Cantidad de servidores</label>
+            <label htmlFor="servers">Cantidad de cajeros</label>
             <input type="text" className="form-input" maxLength="2" value={this.state.servers} onChange={event => this.handleIntegerChange("servers", event.target.value)} />
             {this.state.errors.servers && <p className="form-error">{this.state.errors.servers}</p>}
           </div>
