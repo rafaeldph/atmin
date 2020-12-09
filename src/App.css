@@ -16,6 +16,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  max-width: 1024px;
 }
 
 .form-inputs-container {
