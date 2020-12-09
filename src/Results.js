@@ -17,11 +17,20 @@ function formatNumber(number, precission) {
 }
 
 class Results extends React.Component {
+  constructor(props) {
+    super(props);
+    this.impossible = "No se puede calcular, porque el sistema es inestable";
+  }
+
   r() {
     return this.props.lambda / this.props.mu;
   }
 
   p0() {
+    if (this.usage() > 1 && !this.props.limit) {
+      return 0;
+    }
+
     let inner;
     if (!this.props.limit) {
       inner = (total, a, n) => total + Math.pow(this.r(), n) / factorial(n) + (Math.pow(this.r(), this.props.servers) / (factorial(this.props.servers) * (1 - this.usage())));
@@ -55,16 +64,29 @@ class Results extends React.Component {
   }
   
   averageQueueSize() {
-    let calc = Math.pow(this.r(), this.props.servers) * this.usage() * this.p0() * Math.pow(1 - this.usage(), -2) / factorial(this.props.servers);
+    if (!this.p0()) {
+      return this.impossible;
+    }
+
+    let usage = this.usage();
+    if (this.usage() === 1 && this.props.limit) {
+      usage -= 0.0001;
+    }
+
+    let calc = (Math.pow(this.r(), this.props.servers) * usage * this.p0()) / (factorial(this.props.servers) * Math.pow(1 - usage, 2));
   
     if (!this.props.limit) {
       return parseInt(calc);
     }
-  
-    return parseInt(calc * (1 - Math.pow(this.usage(), this.props.limit - this.props.servers + 1) - (1 - this.usage()) * (this.props.limit - this.props.servers + 1) * Math.pow(this.usage(), this.props.limit - this.props.servers)));
+
+    return parseInt(calc * (1 - Math.pow(this.usage(), this.props.limit - this.props.servers) - (1 - this.usage()) * (this.props.limit - this.props.servers) * Math.pow(this.usage(), this.props.limit - this.props.servers)));
   }
   
   averageQueueTime() {
+    if (!this.p0()) {
+      return this.impossible;
+    }
+
     if (!this.props.limit) {
       return this.averageQueueSize() / this.props.lambda;
     }
@@ -73,14 +95,18 @@ class Results extends React.Component {
   }
   
   averageSystemTime() {
-    if (!this.props.limit) {
-      return this.averageQueueTime() + (1 / this.props.mu);
+    if (!this.p0()) {
+      return this.impossible;
     }
 
-    return this.averageQueueSize() / (this.props.lambda * (1 - this.pn(this.props.limit)));
+    return this.averageQueueTime() + (1 / this.props.mu);
   }
   
   averageSystemSize() {
+    if (!this.p0()) {
+      return this.impossible;
+    }
+
     if (!this.props.limit) {
       return this.r() + this.averageQueueSize();
     }
@@ -89,23 +115,22 @@ class Results extends React.Component {
   }
 
   render() {
-    let n = 0;
-    let pn = this.pn(n), pni = this.pn(n);
-    let probabilities = [];
+    let x = 0, probabilities = [];
+    let px = this.pn(x), pxi = this.pn(x);
 
-    do {
+    while (pxi >= 0 && (px === -1 || px >= 0.0001) && (!this.props.limit || x <= this.props.limit)) {
       probabilities.push(
-        <div className="row" key={n}>
-          <div className="column">{n}</div>
-          <div className="column">{probabilityToPercentage(pn * 100, 4)}</div>
-          <div className="column">{probabilityToPercentage(pni * 100, 4)}</div>
+        <div className="row" key={x}>
+          <div className="column">{x}</div>
+          <div className="column">{probabilityToPercentage(px * 100, 2)}</div>
+          <div className="column">{probabilityToPercentage(pxi * 100, 2)}</div>
         </div>
       ); 
 
-      n++;
-      pn = this.pn(n);
-      pni += pn;
-    } while (pni < 0.99 && pn > 0.000001 && (!this.props.limit || n <= this.props.limit));
+      x++;
+      px = this.pn(x);
+      pxi += px;
+    }
 
     const queue_time = this.averageQueueTime();
     const system_time = this.averageSystemTime();
@@ -120,12 +145,12 @@ class Results extends React.Component {
         </div>
         <div className="block">
           <div className="row">
-            Tiempo promedio en cola: {formatNumber(queue_time, 3)} horas ({secondsToTime(queue_time * 3600)})
+            Tiempo promedio en cola: {isNaN(queue_time) ? queue_time : `${formatNumber(queue_time, 3)} horas (${secondsToTime(queue_time * 3600)})`}
           </div>
         </div>
         <div className="block">
           <div className="row">
-            Tiempo promedio en el sistema: {formatNumber(system_time, 3)} horas ({secondsToTime(system_time * 3600)})
+            Tiempo promedio en el sistema: {isNaN(system_time) ? system_time : `${formatNumber(system_time, 3)} horas (${secondsToTime(system_time * 3600)})`}
           </div>
         </div>
         <div className="block table">

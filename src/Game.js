@@ -87,8 +87,7 @@ class Game extends React.Component {
       let { seconds, clientSeconds } = this.state;
 
       if (parseInt(seconds - 1) <= 0) { 
-        this.stopSimulation();
-        seconds = 1;
+        return this.stopSimulation();
       }
 
       this.setState({ seconds: parseInt(seconds - 1) });
