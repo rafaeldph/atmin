@@ -137,6 +137,7 @@ class Results extends React.Component {
 
     return (
       <div className="results">
+        <button className="return-button" onClick={() => this.props.onQuit()}>x</button>
         <h1>Resultados</h1>
         <div className="block">
           <div className="row">
