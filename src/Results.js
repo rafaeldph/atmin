@@ -154,9 +154,19 @@ class Results extends React.Component {
             Tiempo promedio en el sistema: {isNaN(system_time) ? system_time : `${formatNumber(system_time, 3)} horas (${secondsToTime(system_time * 3600)})`}
           </div>
         </div>
+        <div className="block">
+          <div className="row">
+            Cantidad promedio de clientes en cola: {this.averageQueueSize()}
+          </div>
+        </div>
+        <div className="block">
+          <div className="row">
+            Cantidad promedio de clientes en el sistema: {this.averageSystemSize()}
+          </div>
+        </div>
         <div className="block table">
           <div className="row">
-            <h4>Tabla de robabilidades</h4>
+            <h4>Tabla de probabilidades</h4>
           </div>
           <div className="row">
             <div className="column"><b>x</b></div>
