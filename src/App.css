@@ -1,16 +1,15 @@
 .main-container {
   background-color: #282c34;
   color: white;
+  display: flex;
   width: 100vw;
   min-height: 100vh;
-  display: flex;
   flex-direction: column;
   overflow: auto;
 }
 
-.initial-form {
+.initial-form, .results {
   width: 100%;
-  max-width: 1024px;
   height: 100%;
   margin: auto;
   display: flex;
@@ -188,4 +187,38 @@
   align-items: flex-start;
   flex-wrap: wrap;
   margin: 15px;
+}
+
+.results > .block {
+  margin: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: calc(100% - 10px);
+}
+
+.results > .block > .row {
+  margin: 5px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  flex-wrap: nowrap;
+  align-items: center;
+  width: 100%;
+}
+
+.results > .block > .row > .column {
+  text-align: center;
+}
+
+.results > .block > .row > .column:first-child {
+  width: 20%;
+}
+.results > .block > .row > .column:not(:first-child) {
+  width: 40%;
+}
+
+.table {
+  max-width: 500px;
+  margin: 0 auto;
 }

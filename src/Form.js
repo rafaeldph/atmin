@@ -109,7 +109,7 @@ class Form extends React.Component {
             {this.state.errors.servers && <p className="form-error">{this.state.errors.servers}</p>}
           </div>
           <div className="form-element">
-            <label htmlFor="limit">Límite de la cola</label>
+            <label htmlFor="limit">Límite del sistema</label>
             <input type="text" className="form-input" maxLength="6" value={this.state.limit} placeholder="Sin límite" onChange={event => this.handleIntegerChange("limit", event.target.value)} />
           </div>
           <div className="form-element">

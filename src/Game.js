@@ -1,20 +1,7 @@
 import React from 'react';
 import Server from './Server';
 import Client from './Client';
-
-function pad(num, size) {
-  num = num.toString();
-  while (num.length < size) num = "0" + num;
-  return num;
-}
-
-function secondsToTime(seconds) {
-  return [...Array(2).keys()].reduce((result, index) => {
-    result.push(result[index] % Math.pow(60, 2-index));
-    result[index] = Math.floor(result[index] / Math.pow(60, 2-index));
-    return result;
-  }, [seconds]).map(value => pad(value, 2)).join(":");
-}
+import secondsToTime from './time';
 
 function getRandomExponential(rate) {
   return parseInt(-Math.log(Math.random()) * rate);
@@ -60,8 +47,8 @@ class Game extends React.Component {
     clearInterval(this.timer);
 
     this.props.onFinish({
-      lambda: this.props.lambda / 3600,
-      mu: this.props.mu / 3600,
+      lambda: 3600/this.props.lambda,
+      mu: 3600/this.props.mu,
       limit: this.props.limit,
       servers: this.props.servers
     });
@@ -77,7 +64,7 @@ class Game extends React.Component {
       shirt={`rgb(${parseInt(Math.random() * 256)}, ${parseInt(Math.random() * 256)}, ${parseInt(Math.random() * 256)})`}
     />;
 
-    if (!this.props.limit || this.state.clients.length < this.props.limit) {
+    if (!this.props.limit || this.state.clients.length + this.state.servers.filter(s => s.client !== '').length < this.props.limit) {
       let { clients, lastClient } = this.state;
 
       clients.push({ client: client, clientTime: getRandomPoisson(this.props.mu) });
