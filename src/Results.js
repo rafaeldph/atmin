@@ -19,7 +19,7 @@ function formatNumber(number, precission) {
 class Results extends React.Component {
   constructor(props) {
     super(props);
-    this.impossible = "No se puede calcular, porque el sistema es inestable";
+    this.impossible = "No se puede calcular, porque el sistema no es estable";
   }
 
   r() {
@@ -76,10 +76,10 @@ class Results extends React.Component {
     let calc = (Math.pow(this.r(), this.props.servers) * usage * this.p0()) / (factorial(this.props.servers) * Math.pow(1 - usage, 2));
   
     if (!this.props.limit) {
-      return parseInt(calc);
+      return calc;
     }
 
-    return parseInt(calc * (1 - Math.pow(this.usage(), this.props.limit - this.props.servers) - (1 - this.usage()) * (this.props.limit - this.props.servers) * Math.pow(this.usage(), this.props.limit - this.props.servers)));
+    return (calc * (1 - Math.pow(this.usage(), this.props.limit - this.props.servers) - (1 - this.usage()) * (this.props.limit - this.props.servers) * Math.pow(this.usage(), this.props.limit - this.props.servers)));
   }
   
   averageQueueTime() {
@@ -156,12 +156,12 @@ class Results extends React.Component {
         </div>
         <div className="block">
           <div className="row">
-            Cantidad promedio de clientes en cola: {this.averageQueueSize()}
+            Cantidad promedio de clientes en cola: {Math.round(this.averageQueueSize())}
           </div>
         </div>
         <div className="block">
           <div className="row">
-            Cantidad promedio de clientes en el sistema: {this.averageSystemSize()}
+            Cantidad promedio de clientes en el sistema: {Math.round(this.averageSystemSize())}
           </div>
         </div>
         <div className="block table">
