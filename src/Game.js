@@ -74,7 +74,7 @@ class Game extends React.Component {
     let rejectedClients = this.state.rejectedClients;
     rejectedClients.push(client);
 
-    this.setState({ rejectedClients: rejectedClients }, () => setTimeout(() => {
+    this.setState({ rejectedClients: rejectedClients, clientSeconds: getRandomExponential(this.props.lambda) }, () => setTimeout(() => {
       rejectedClients = this.state.rejectedClients;
       rejectedClients.shift();
       this.setState({ rejectedClients: rejectedClients });
